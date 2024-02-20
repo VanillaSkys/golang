@@ -37,8 +37,6 @@ jobs:
 
     # - name: Build
     #   run: go build -v ./...
-    - name: Initialize Go module (if necessary)
-      run: go mod init github.com/VanillaSkys/golang # Replace with your module name if needed
 
     - name: Run tests
       run: go test ./database/postgresql/migration/
