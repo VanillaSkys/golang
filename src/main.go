@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/VanillaSkys/golang/cmd"
 
 func main() {
-	fmt.Println("Start")
+	cmd.Execute()
 }
