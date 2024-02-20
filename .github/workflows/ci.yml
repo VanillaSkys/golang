@@ -38,6 +38,6 @@ jobs:
     # - name: Build
     #   run: go build -v ./...
     - name: Run migration package tests
-      run: go test -v ./migration
+      run: go test ./src/database/postgresql/migration/
     # - name: Test
     #   run: go test -v ./...
