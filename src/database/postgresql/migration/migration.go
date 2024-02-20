@@ -24,11 +24,12 @@ func Migrate(code string) {
 
 	// Execute migrations
 	for _, m := range Migrations {
-		if err := m.Function(code); err != nil {
-			fmt.Printf("Error running migration '%s': %s\n", m.Name, err)
-			return
-		}
-		fmt.Printf("Migration '%s' executed successfully\n", m.Name)
+		m.Function(code)
+		// if err := m.Function(code); err != nil {
+		// 	fmt.Printf("Error running migration '%s': %s\n", m.Name, err)
+		// 	return
+		// }
+		// fmt.Printf("Migration '%s' executed successfully\n", m.Name)
 	}
 }
 

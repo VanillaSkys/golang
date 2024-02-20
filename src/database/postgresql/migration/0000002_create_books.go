@@ -2,17 +2,17 @@ package migration
 
 var createBookTableMigration = &Migration{
 	Number: 2,
-	Name:   "create book table",
+	Name:   "create books table",
 	Function: func(code string) error {
 		const column = `
 			id SERIAL PRIMARY KEY,
 			name TEXT
 		`
 		if code == "update" {
-			return Update("book", column)
+			return Update("books", column)
 		}
 		if code == "create" {
-			return Create("book", column)
+			return Create("books", column)
 		}
 		return nil
 	},

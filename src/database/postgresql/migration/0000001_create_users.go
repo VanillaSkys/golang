@@ -2,18 +2,17 @@ package migration
 
 var createUserTableMigration = &Migration{
 	Number: 1,
-	Name:   "create user table",
+	Name:   "create users table",
 	Function: func(code string) error {
 		const column = `
 			id SERIAL PRIMARY KEY,
-			username TEXT,
-			password TEXT
+			username TEXT
 		`
 		if code == "update" {
-			return Update("user", column)
+			return Update("users", column)
 		}
 		if code == "create" {
-			return Create("user", column)
+			return Create("users", column)
 		}
 		return nil
 	},

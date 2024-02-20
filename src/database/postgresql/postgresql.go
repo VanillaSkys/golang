@@ -8,7 +8,6 @@ import (
 )
 
 const (
-	addr     = "locahost:5432"
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
@@ -19,11 +18,9 @@ const (
 var DB *sql.DB
 
 func ConnectDB() (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
-		user, password, addr, dbname)
-	// psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-	// 	"password=%s dbname=%s sslmode=disable",
-	// 	host, port, user, password, dbname)
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		return nil, err
