@@ -5,9 +5,13 @@ name: Go
 
 on:
   push:
-    branches: [ "main" ]
+    branches: 
+      - main
+      - master
   pull_request:
-    branches: [ "main" ]
+    branches: 
+      - main
+      - master
 
 jobs:
 
@@ -39,13 +43,6 @@ jobs:
     #   run: go build -v ./...
     - name: Run tests
       run: go test ./database/postgresql/migration/
-      env:
-        # The hostname used to communicate with the PostgreSQL service container
-        POSTGRES_HOST: localhost
-        # The default PostgreSQL port
-        POSTGRES_PORT: 5432
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: go_test
+
     # - name: Test
     #   run: go test -v ./...
