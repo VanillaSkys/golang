@@ -1,6 +1,7 @@
 package migration
 
 import (
+	"context"
 	"fmt"
 	"sort"
 
@@ -34,22 +35,18 @@ func Migrate(code string) {
 }
 
 func Create(name string, column string) error {
-	db, err := postgresql.ConnectDB()
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+
 	// Drop table
 	dropSql := fmt.Sprintf("DROP TABLE IF EXISTS %s CASCADE", name)
+	_, err := postgresql.DB.Query(context.Background(), dropSql)
 	if err != nil {
 		fmt.Println("Error dropping table:", err)
 		return err
 	}
 	fmt.Printf("Table '%s' dropped successfully!", name)
 	// Create table
-	db.Exec(dropSql)
 	create := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (%s)", name, column)
-	_, err = db.Exec(create)
+	_, err = postgresql.DB.Exec(context.Background(), create)
 	if err != nil {
 		fmt.Println("Error creating table:", err)
 		return err
@@ -59,14 +56,9 @@ func Create(name string, column string) error {
 }
 
 func Update(name string, column string) error {
-	db, err := postgresql.ConnectDB()
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
 	// Create table
 	create := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (%s)", name, column)
-	_, err = db.Exec(create)
+	_, err := postgresql.DB.Exec(context.Background(), create)
 	if err != nil {
 		fmt.Println("Error creating table:", err)
 		return err

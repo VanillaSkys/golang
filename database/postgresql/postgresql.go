@@ -1,39 +1,41 @@
 package postgresql
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
 
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 const (
-	host     = "127.0.0.1"
+	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
 	password = "postgres"
 	dbname   = "go_test"
 )
 
-var DB *sql.DB
+var DB *pgxpool.Pool
 
-func ConnectDB() (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+func ConnectDB() (*pgxpool.Pool, error) {
+	connString := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-	db, err := sql.Open("postgres", psqlInfo)
+
+	config, err := pgxpool.ParseConfig(connString)
+	if err != nil {
+		return nil, err
+	}
+
+	DB, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
 		return nil, err
 	}
 
 	// Check the connection
-	if err := db.Ping(); err != nil {
-		db.Close()
-		return nil, err
-	}
-
-	// Set the global DB variable
-	DB = db
-
+	// if err := DB.Ping(context.Background()); err != nil {
+	// 	DB.Close()
+	// 	return nil, err
+	// }
 	return DB, nil
 }

@@ -41,8 +41,12 @@ jobs:
 
     # - name: Build
     #   run: go build -v ./...
-    - name: Run tests
-      run: go test ./database/postgresql/migration/
-
+    # - name: Run tests
+    #   run: go test ./database/postgresql/migration/
+    - name: Run Tests
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/go_test?sslmode=disable
+      run: |
+        go test ./...
     # - name: Test
     #   run: go test -v ./...
