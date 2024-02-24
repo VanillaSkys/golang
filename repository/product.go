@@ -2,8 +2,6 @@ package repository
 
 import (
 	"context"
-
-	"github.com/VanillaSkys/golang/database/postgresql"
 )
 
 const PRODUCT_TABLE_NAME = "products"
@@ -17,7 +15,7 @@ type ProductRepository interface {
 }
 
 func (repository Repository) Save(name string) error {
-	_, err := postgresql.DB.Query(context.Background(), "INSERT INTO product (name) VALUES ($1)", name)
+	_, err := repository.DB.Query(context.Background(), "INSERT INTO product (name) VALUES ($1)", name)
 	if err != nil {
 		return err
 	}

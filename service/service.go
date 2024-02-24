@@ -5,6 +5,5 @@ type Service struct {
 }
 
 func New(requestId string) Service {
-	serviceObj := Service{RequestId: requestId}
-	return serviceObj
+	return Service{RequestId: requestId}
 }
