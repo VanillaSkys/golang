@@ -15,13 +15,17 @@ func TestSave(t *testing.T) {
 	// 	t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	// }
 	// defer db.Close()
+	config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		t.Errorf("failed to config", err)
+	}
 
-	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	db, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
 		t.Fatalf("failed to connect to pgxpool: %v", err)
 	}
 
-	r := repository.New("123", pool)
+	r := repository.New("123", db)
 
 	id := "1"
 	name := "test product"
