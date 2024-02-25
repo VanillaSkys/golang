@@ -23,8 +23,14 @@ func TestSave(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1)).
 		WillReturnError(nil)
 
-		// Pass the mock database connection to your repository
-	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+		// Retrieve the database connection string from the environment variable
+	databaseURL := os.Getenv("DATABASE_URL")
+	if databaseURL == "" {
+		t.Fatal("DATABASE_URL environment variable is not set")
+	}
+
+	// Connect to the PostgreSQL database
+	pool, err := pgxpool.Connect(context.Background(), databaseURL)
 	if err != nil {
 		t.Fatalf("failed to connect to pgxpool: %v", err)
 	}
