@@ -2,15 +2,12 @@ package test
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"os"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/VanillaSkys/golang/repository"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/joho/godotenv"
 )
 
 // func TestSave(t *testing.T) {
@@ -40,11 +37,11 @@ import (
 // }
 
 func TestSave(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	fmt.Println(os.Getenv("DATABASE_URL"))
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
+	// fmt.Println(os.Getenv("DATABASE_URL"))
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
