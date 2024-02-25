@@ -9,10 +9,6 @@ import (
 )
 
 func Execute() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
 	postgresql.ConnectDB()
 	if len(os.Args) == 1 {
 		http.InitHttpServer()

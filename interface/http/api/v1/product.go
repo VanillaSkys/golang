@@ -20,11 +20,11 @@ func CreateProduct(c *gin.Context) {
 	controllerObj := controller.New(requestID.(string))
 	err := controllerObj.CreateProduct(input)
 	fmt.Println(err)
-	// if err != nil {
-	// 	responseErr := response.ResponseError{}
-	// 	responseErr.Status = 404
-	// 	responseErr.Error = err
-	// }
+	if err != nil {
+		responseErr := response.ResponseError{}
+		responseErr.Status = 404
+		responseErr.Error = err
+	}
 	responseData.Status = 200
 	responseData.Data = input
 	c.JSON(200, responseData)
