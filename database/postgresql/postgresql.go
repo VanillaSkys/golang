@@ -2,7 +2,6 @@ package postgresql
 
 import (
 	"context"
-	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -22,7 +21,7 @@ func ConnectDB() (*pgxpool.Pool, error) {
 	// 	"password=%s dbname=%s sslmode=disable",
 	// 	host, port, user, password, dbname)
 
-	config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
+	config, err := pgxpool.ParseConfig("postgresql://username:password@localhost:5432/testdb")
 	if err != nil {
 		return nil, err
 	}

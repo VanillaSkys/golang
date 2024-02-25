@@ -1,20 +1,18 @@
 package cmd
 
 import (
-	"log"
 	"os"
 
 	"github.com/VanillaSkys/golang/database/postgresql"
 	"github.com/VanillaSkys/golang/database/postgresql/migration"
 	"github.com/VanillaSkys/golang/interface/http"
-	"github.com/joho/godotenv"
 )
 
 func Execute() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 	postgresql.ConnectDB()
 	if len(os.Args) == 1 {
 		http.InitHttpServer()
