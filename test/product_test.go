@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"testing"
 
@@ -10,38 +11,8 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-// func TestSave(t *testing.T) {
-// 	// err := godotenv.Load()
-// 	// if err != nil {
-// 	// 	log.Fatal("Error loading .env file")
-// 	// }
-// 	config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
-// 	if err != nil {
-// 		t.Fatalf("failed to config database connection: %v", err)
-// 	}
-
-// 	db, err := pgxpool.ConnectConfig(context.Background(), config)
-// 	if err != nil {
-// 		t.Fatalf("failed to open database connection: %v", err)
-// 	}
-
-// 	r := repository.New("123", db)
-
-// 	id := "test"
-// 	name := "test"
-
-// 	if err := r.Save(id, name); err != nil {
-// 		t.Errorf("unexpected error: %v", err)
-// 	}
-
-// }
-
 func TestSave(t *testing.T) {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
-	// fmt.Println(os.Getenv("DATABASE_URL"))
+	fmt.Println(os.Getenv("DATABASE_URL"))
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -58,8 +29,8 @@ func TestSave(t *testing.T) {
 	id := "test product"
 	name := "test product"
 
-	mock.ExpectExec("INSERT INTO product ").
-		WithArgs(id, name).
+	mock.ExpectExec("INSERT INTO product").
+		WithArgs(name).
 		WillReturnResult(sqlmock.NewResult(1, 1)).
 		WillReturnError(nil)
 
