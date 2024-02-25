@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"testing"
 
@@ -12,7 +11,6 @@ import (
 )
 
 func TestSave(t *testing.T) {
-	fmt.Println(os.Getenv("DATABASE_URL"))
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -26,7 +24,7 @@ func TestSave(t *testing.T) {
 
 	r := repository.New("123", pool)
 
-	id := "test product"
+	id := "1"
 	name := "test product"
 
 	mock.ExpectExec("INSERT INTO product").
