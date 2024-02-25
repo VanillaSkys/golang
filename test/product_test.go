@@ -11,35 +11,36 @@ import (
 )
 
 func TestSave(t *testing.T) {
-	_, mock, err := sqlmock.New()
+	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		t.Fatalf("an error '%s' occurred while opening a stub database connection", err)
 	}
+	defer db.Close()
 
-	config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
-	if err != nil {
-		t.Fatalf("failed to config : %v", err)
-	}
-
-	db, err := pgxpool.ConnectConfig(context.Background(), config)
-	if err != nil {
-		t.Fatalf("failed to connect to pgxpool: %v", err)
-	}
-
-	r := repository.New("123", db)
-
-	id := "1"
-	name := "test product"
-
+	// Set up expectations for the mock
 	mock.ExpectExec("INSERT INTO product").
-		WithArgs(id, name).
+		WithArgs("1", "test product").
 		WillReturnResult(sqlmock.NewResult(1, 1)).
 		WillReturnError(nil)
 
+		// Pass the mock database connection to your repository
+	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	if err != nil {
+		t.Fatalf("failed to connect to pgxpool: %v", err)
+	}
+	defer pool.Close()
+
+	// Pass the mock database connection to your repository
+	r := repository.New("123", pool)
+
+	// Call the method being tested
+	id := "1"
+	name := "test product"
 	if err := r.Save(id, name); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
+	// Ensure all expectations were met
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("there were unfulfilled expectations: %v", err)
 	}
