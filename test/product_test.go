@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"testing"
 
@@ -10,20 +11,21 @@ import (
 
 func TestSave(t *testing.T) {
 
-	// Create a new PostgreSQL connection pool
-	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	dbpool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
-		t.Fatalf("Unable to connect to database: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
+		os.Exit(1)
 	}
-	defer pool.Close()
+	defer dbpool.Close()
 
-	// Test your database connection here
-	// For example, you can perform a query to ensure the connection is working
-	rows, err := pool.Query(context.Background(), "SELECT 1")
+	var greeting string
+	err = dbpool.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
 	if err != nil {
-		t.Fatalf("Error querying database: %v\n", err)
+		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
+		os.Exit(1)
 	}
-	defer rows.Close()
+
+	fmt.Println(greeting)
 
 }
 
