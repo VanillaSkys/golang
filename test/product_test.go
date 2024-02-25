@@ -2,6 +2,8 @@ package test
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"os"
 	"testing"
 
@@ -9,26 +11,25 @@ import (
 )
 
 func TestSave(t *testing.T) {
-	// pool, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
-	// if err != nil {
-	// 	t.Fatalf("failed to connect to pgxpool: %v", err)
-	// }
-	// defer pool.Close()
-	config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
+
+	// Get PostgreSQL connection details from environment variables
+	host := os.Getenv("PGHOST")
+	port := os.Getenv("PGPORT") // Default PostgreSQL port is 5432
+	user := os.Getenv("PGUSER")
+	password := os.Getenv("PGPASSWORD")
+	database := os.Getenv("PGDATABASE")
+
+	// Construct PostgreSQL connection string
+	connString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s pool_max_conns=10",
+		host, port, user, password, database)
+
+	// Create a new PostgreSQL connection pool
+	pool, err := pgxpool.Connect(context.Background(), connString)
 	if err != nil {
-		t.Fatalf("failed to config to pgxpool: %v", err)
-	}
-	pool, err := pgxpool.ConnectConfig(context.Background(), config)
-	if err != nil {
-		t.Fatalf("failed to connect to pgxpool: %v", err)
+		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
 	defer pool.Close()
-	// repo := repository.New("123", pool)
 
-	// name := "test product"
-	// if err := repo.Save(name, name); err != nil {
-	// 	t.Errorf("unexpected error: %v", err)
-	// }
 }
 
 // func TestSave_Error(t *testing.T) {
