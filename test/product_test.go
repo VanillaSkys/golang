@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -11,11 +10,19 @@ import (
 func TestSave(t *testing.T) {
 
 	// Create a new PostgreSQL connection pool
-	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	pool, err := pgxpool.Connect(context.Background(), "DATABASE_URL")
 	if err != nil {
 		t.Fatalf("Unable to connect to database: %v\n", err)
 	}
 	defer pool.Close()
+
+	// Test your database connection here
+	// For example, you can perform a query to ensure the connection is working
+	rows, err := pool.Query(context.Background(), "SELECT 1")
+	if err != nil {
+		t.Fatalf("Error querying database: %v\n", err)
+	}
+	defer rows.Close()
 
 }
 
