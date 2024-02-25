@@ -1,18 +1,28 @@
 package test
 
 import (
-	"database/sql"
+	"context"
 	"os"
 	"testing"
+
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func TestSave(t *testing.T) {
-	pool, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	// pool, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	// if err != nil {
+	// 	t.Fatalf("failed to connect to pgxpool: %v", err)
+	// }
+	// defer pool.Close()
+	config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		t.Fatalf("failed to config to pgxpool: %v", err)
+	}
+	pool, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
 		t.Fatalf("failed to connect to pgxpool: %v", err)
 	}
 	defer pool.Close()
-
 	// repo := repository.New("123", pool)
 
 	// name := "test product"
