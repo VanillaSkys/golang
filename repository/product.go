@@ -8,10 +8,6 @@ const PRODUCT_TABLE_NAME = "products"
 
 type ProductRepository interface {
 	Save(name string) error
-	// FindByID(ctx context.Context, id int) (*model.User, error)
-	// Update(ctx context.Context, user *model.User) error
-	// Delete(ctx context.Context, id int) error
-	// Add other methods as needed
 }
 
 func (repository Repository) Save(id string, name string) error {

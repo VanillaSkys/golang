@@ -29,13 +29,7 @@ func TestSave(t *testing.T) {
 		t.Fatal("DATABASE_URL environment variable is not set")
 	}
 
-	// Connect to the PostgreSQL database
-	config, err := pgxpool.ParseConfig(databaseURL)
-	if err != nil {
-		t.Fatalf("failed to config to pgxpool: %v", err)
-	}
-
-	pool, err := pgxpool.ConnectConfig(context.Background(), config)
+	pool, err := pgxpool.Connect(context.Background(), databaseURL)
 	if err != nil {
 		t.Fatalf("failed to connect to pgxpool: %v", err)
 	}
