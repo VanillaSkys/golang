@@ -2,8 +2,6 @@ package test
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"os"
 	"testing"
 
@@ -12,21 +10,10 @@ import (
 
 func TestSave(t *testing.T) {
 
-	// Get PostgreSQL connection details from environment variables
-	host := os.Getenv("PGHOST")
-	port := os.Getenv("PGPORT") // Default PostgreSQL port is 5432
-	user := os.Getenv("PGUSER")
-	password := os.Getenv("PGPASSWORD")
-	database := os.Getenv("PGDATABASE")
-
-	// Construct PostgreSQL connection string
-	connString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s pool_max_conns=10",
-		host, port, user, password, database)
-
 	// Create a new PostgreSQL connection pool
-	pool, err := pgxpool.Connect(context.Background(), connString)
+	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatalf("Unable to connect to database: %v\n", err)
+		t.Fatalf("Unable to connect to database: %v\n", err)
 	}
 	defer pool.Close()
 
