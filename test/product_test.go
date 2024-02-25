@@ -30,12 +30,16 @@ func TestSave(t *testing.T) {
 	}
 
 	// Connect to the PostgreSQL database
-	pool, err := pgxpool.Connect(context.Background(), databaseURL)
+	config, err := pgxpool.ParseConfig(databaseURL)
+	if err != nil {
+		t.Fatalf("failed to config to pgxpool: %v", err)
+	}
+
+	pool, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
 		t.Fatalf("failed to connect to pgxpool: %v", err)
 	}
 	defer pool.Close()
-
 	// Pass the mock database connection to your repository
 	r := repository.New("123", pool)
 
