@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -11,21 +10,32 @@ import (
 
 func TestSave(t *testing.T) {
 
-	dbpool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	// Configure the connection pool
+	connPool, err := pgxpool.Connect(context.Background(), "postgresql://username:password@localhost:5432/mydatabase")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
-		os.Exit(1)
+		t.Fatalf("Unable to connect to database: %v", err)
 	}
-	defer dbpool.Close()
+	defer connPool.Close()
 
-	var greeting string
-	err = dbpool.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
+	// Example query
+	rows, err := connPool.Query(context.Background(), "SELECT id, name FROM users")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		t.Fatalf("Error executing query: %v", err)
 	}
+	defer rows.Close()
 
-	fmt.Println(greeting)
+	// Iterate through the result set
+	for rows.Next() {
+		var id int
+		var name string
+		if err := rows.Scan(&id, &name); err != nil {
+			t.Fatalf("Error scanning row: %v", err)
+		}
+		fmt.Printf("ID: %d, Name: %s\n", id, name)
+	}
+	if err := rows.Err(); err != nil {
+		t.Fatalf("Error iterating through result set: %v", err)
+	}
 
 }
 
