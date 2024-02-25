@@ -11,7 +11,7 @@ import (
 func TestSave(t *testing.T) {
 
 	// Configure the connection pool
-	connPool, err := pgxpool.Connect(context.Background(), "postgresql://username:password@localhost:5432/mydatabase")
+	connPool, err := pgxpool.Connect(context.Background(), "postgresql://username:password@localhost:5432/testdb")
 	if err != nil {
 		t.Fatalf("Unable to connect to database: %v", err)
 	}
