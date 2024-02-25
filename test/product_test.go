@@ -5,49 +5,22 @@ import (
 	"os"
 	"testing"
 
-	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/VanillaSkys/golang/repository"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func TestSave(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("an error '%s' occurred while opening a stub database connection", err)
-	}
-	defer db.Close()
-
-	// Set up expectations for the mock
-	mock.ExpectExec("INSERT INTO product").
-		WithArgs("1", "test product").
-		WillReturnResult(sqlmock.NewResult(1, 1)).
-		WillReturnError(nil)
-
-	// Retrieve the database connection string from the environment variable
-	databaseURL := os.Getenv("DATABASE_URL")
-	if databaseURL == "" {
-		t.Fatal("DATABASE_URL environment variable is not set")
-	}
-
-	pool, err := pgxpool.Connect(context.Background(), "mock://localhost:5432/dbname")
+	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		t.Fatalf("failed to connect to pgxpool: %v", err)
 	}
 	defer pool.Close()
 
-	// Pass the mock database connection to your repository
-	r := repository.New("123", pool)
+	repo := repository.New("123", pool)
 
-	// Call the method being tested
-	id := "1"
 	name := "test product"
-	if err := r.Save(id, name); err != nil {
-		t.Errorf("error saving product: %v", err)
-	}
-
-	// Ensure all expectations were met
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %v", err)
+	if err := repo.Save(name, name); err != nil {
+		t.Errorf("unexpected error: %v", err)
 	}
 }
 
