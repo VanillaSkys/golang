@@ -5,19 +5,20 @@ import (
 	"os"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/VanillaSkys/golang/repository"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func TestSave(t *testing.T) {
-	// db, mock, err := sqlmock.New()
-	// if err != nil {
-	// 	t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	// }
-	// defer db.Close()
+	_, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+
 	config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
 	if err != nil {
-		t.Errorf("failed to config", err)
+		t.Fatalf("failed to config : %v", err)
 	}
 
 	db, err := pgxpool.ConnectConfig(context.Background(), config)
@@ -30,18 +31,18 @@ func TestSave(t *testing.T) {
 	id := "1"
 	name := "test product"
 
-	// mock.ExpectExec("INSERT INTO product").
-	// 	WithArgs(name).
-	// 	WillReturnResult(sqlmock.NewResult(1, 1)).
-	// 	WillReturnError(nil)
+	mock.ExpectExec("INSERT INTO product").
+		WithArgs(id, name).
+		WillReturnResult(sqlmock.NewResult(1, 1)).
+		WillReturnError(nil)
 
 	if err := r.Save(id, name); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	// if err := mock.ExpectationsWereMet(); err != nil {
-	// 	t.Errorf("there were unfulfilled expectations: %v", err)
-	// }
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %v", err)
+	}
 }
 
 // func TestSave_Error(t *testing.T) {
