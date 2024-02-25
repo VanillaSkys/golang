@@ -18,7 +18,7 @@ func TestSave(t *testing.T) {
 	defer connPool.Close()
 
 	// Example query
-	rows, err := connPool.Query(context.Background(), "SELECT id, name FROM users")
+	rows, err := connPool.Query(context.Background(), "SELECT id, name FROM product")
 	if err != nil {
 		t.Fatalf("Error executing query: %v", err)
 	}
