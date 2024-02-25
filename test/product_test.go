@@ -23,7 +23,7 @@ func TestSave(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1)).
 		WillReturnError(nil)
 
-		// Retrieve the database connection string from the environment variable
+	// Retrieve the database connection string from the environment variable
 	databaseURL := os.Getenv("DATABASE_URL")
 	if databaseURL == "" {
 		t.Fatal("DATABASE_URL environment variable is not set")
@@ -40,6 +40,7 @@ func TestSave(t *testing.T) {
 		t.Fatalf("failed to connect to pgxpool: %v", err)
 	}
 	defer pool.Close()
+
 	// Pass the mock database connection to your repository
 	r := repository.New("123", pool)
 
@@ -47,7 +48,7 @@ func TestSave(t *testing.T) {
 	id := "1"
 	name := "test product"
 	if err := r.Save(id, name); err != nil {
-		t.Errorf("unexpected error: %v", err)
+		t.Errorf("error saving product: %v", err)
 	}
 
 	// Ensure all expectations were met
