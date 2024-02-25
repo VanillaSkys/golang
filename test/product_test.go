@@ -29,7 +29,7 @@ func TestSave(t *testing.T) {
 		t.Fatal("DATABASE_URL environment variable is not set")
 	}
 
-	pool, err := pgxpool.Connect(context.Background(), databaseURL)
+	pool, err := pgxpool.Connect(context.Background(), "mock://localhost:5432/dbname")
 	if err != nil {
 		t.Fatalf("failed to connect to pgxpool: %v", err)
 	}
