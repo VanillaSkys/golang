@@ -5,7 +5,7 @@ var createUserTableMigration = &Migration{
 	Name:   "create users table",
 	Function: func(code string) error {
 		const column = `
-			id SERIAL PRIMARY KEY,
+			id TEXT PRIMARY KEY,
 			username TEXT
 		`
 		if code == "update" {

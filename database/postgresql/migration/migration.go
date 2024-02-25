@@ -17,7 +17,6 @@ type Migration struct {
 var Migrations []*Migration
 
 func Migrate(code string) {
-
 	// Sort migrations by number
 	sort.Slice(Migrations, func(i, j int) bool {
 		return Migrations[i].Number < Migrations[j].Number
@@ -46,7 +45,7 @@ func Create(name string, column string) error {
 	fmt.Printf("Table '%s' dropped successfully!", name)
 	// Create table
 	create := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (%s)", name, column)
-	_, err = postgresql.DB.Exec(context.Background(), create)
+	_, err = postgresql.DB.Query(context.Background(), create)
 	if err != nil {
 		fmt.Println("Error creating table:", err)
 		return err
@@ -58,7 +57,8 @@ func Create(name string, column string) error {
 func Update(name string, column string) error {
 	// Create table
 	create := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (%s)", name, column)
-	_, err := postgresql.DB.Exec(context.Background(), create)
+	_, err := postgresql.DB.Query(context.Background(), create)
+	fmt.Println("YES")
 	if err != nil {
 		fmt.Println("Error creating table:", err)
 		return err

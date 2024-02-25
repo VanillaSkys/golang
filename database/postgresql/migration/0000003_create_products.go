@@ -5,7 +5,7 @@ var createProductTableMigration = &Migration{
 	Name:   "create products table",
 	Function: func(code string) error {
 		const column = `
-			id SERIAL PRIMARY KEY,
+			id TEXT PRIMARY KEY,
 			name TEXT
 		`
 		if code == "update" {

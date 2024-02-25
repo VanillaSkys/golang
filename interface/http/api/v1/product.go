@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"fmt"
+
 	"github.com/VanillaSkys/golang/controller"
 	"github.com/VanillaSkys/golang/request"
 	"github.com/VanillaSkys/golang/response"
@@ -17,15 +19,17 @@ func CreateProduct(c *gin.Context) {
 	requestID, _ := c.Get("request_id")
 	controllerObj := controller.New(requestID.(string))
 	err := controllerObj.CreateProduct(input)
-	if err != nil {
-		responseErr := response.ResponseError{}
-		responseErr.Status = 507
-		responseErr.Error = err
-	}
+	fmt.Println(err)
+	// if err != nil {
+	// 	responseErr := response.ResponseError{}
+	// 	responseErr.Status = 404
+	// 	responseErr.Error = err
+	// }
 	responseData.Status = 200
+	responseData.Data = input
 	c.JSON(200, responseData)
 }
 
 func init() {
-	methodRoutes[ROUTE_POST]["/product"] = CreateBook
+	methodRoutes[ROUTE_POST]["/product"] = CreateProduct
 }

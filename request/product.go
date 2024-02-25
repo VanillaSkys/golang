@@ -1,5 +1,6 @@
 package request
 
 type CreateProduct struct {
-	Name string `json:"name" binding:"reuired"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }

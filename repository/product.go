@@ -14,8 +14,8 @@ type ProductRepository interface {
 	// Add other methods as needed
 }
 
-func (repository Repository) Save(name string) error {
-	_, err := repository.DB.Query(context.Background(), "INSERT INTO product (name) VALUES ($1)", name)
+func (repository Repository) Save(id string, name string) error {
+	_, err := repository.DB.Query(context.Background(), "INSERT INTO "+PRODUCT_TABLE_NAME+" (id, name) VALUES ($1, $2)", id, name)
 	if err != nil {
 		return err
 	}

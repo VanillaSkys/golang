@@ -9,9 +9,10 @@ type ProductService interface {
 	CreateProduct(name string) error
 }
 
-func (service Service) CreateProduct(name string) error {
+func (service Service) CreateProduct(id string, name string) error {
 	repoObj := repository.New(service.RequestId, postgresql.DB)
-	if err := repoObj.Save(name); err != nil {
+	err := repoObj.Save(id, name)
+	if err != nil {
 		return err
 	}
 	return nil

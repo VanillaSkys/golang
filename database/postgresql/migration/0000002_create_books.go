@@ -5,7 +5,7 @@ var createBookTableMigration = &Migration{
 	Name:   "create books table",
 	Function: func(code string) error {
 		const column = `
-			id SERIAL PRIMARY KEY,
+			id TEXT PRIMARY KEY,
 			name TEXT
 		`
 		if code == "update" {
