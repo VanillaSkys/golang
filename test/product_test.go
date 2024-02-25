@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/VanillaSkys/golang/database/postgresql"
 	"github.com/VanillaSkys/golang/database/postgresql/migration"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func TestSave(t *testing.T) {
+	postgresql.ConnectDB()
 	migration.Migrate("create")
 	// Configure the connection pool
 	connPool, err := pgxpool.Connect(context.Background(), "postgresql://username:password@localhost:5432/testdb")
