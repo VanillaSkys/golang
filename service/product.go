@@ -65,3 +65,12 @@ func (service Service) UpdateProductById(request request.UpdateById) error {
 	}
 	return nil
 }
+
+func (service Service) DeleteById(request request.DeleteById) error {
+	repoObj := repository.New(service.RequestId, postgresql.DB)
+	err := repoObj.Delete(request.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

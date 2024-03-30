@@ -23,3 +23,21 @@ func (controller Controller) CreateProduct(request request.CreateProduct) error 
 	}
 	return nil
 }
+
+func (controller Controller) UpdateProduct(request request.UpdateById) error {
+	serviceObj := service.New(controller.RequestId)
+	err := serviceObj.UpdateProductById(request)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (controller Controller) DeleteProduct(request request.DeleteById) error {
+	serviceObj := service.New(controller.RequestId)
+	err := serviceObj.DeleteById(request)
+	if err != nil {
+		return err
+	}
+	return nil
+}

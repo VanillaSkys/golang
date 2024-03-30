@@ -11,6 +11,7 @@ type ProductRepository interface {
 	FindByName(name string) (model.Product, error)
 	Save(product model.Product) error
 	Update(id string, name string) error
+	Delete(id string) error
 }
 
 func (repository Repository) FindAll() ([]model.Product, error) {
@@ -41,6 +42,14 @@ func (repository Repository) Save(product model.Product) error {
 
 func (repository Repository) Update(id string, name string) error {
 	result := repository.DB.Model(&model.Product{}).Where("id = ?", id).Update("name", name)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (repository Repository) Delete(id string) error {
+	result := repository.DB.Where("id = ?", id).Delete(&model.Product{})
 	if result.Error != nil {
 		return result.Error
 	}
