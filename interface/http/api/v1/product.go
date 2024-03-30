@@ -9,6 +9,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetAllProduct(c *gin.Context) {
+	responseData := response.ResponseData{}
+
+	requestID, _ := c.Get("request_id")
+	controllerObj := controller.New(requestID.(string))
+	output, err := controllerObj.FindAllProduct()
+	fmt.Println(err)
+	if err != nil {
+		responseErr := response.ResponseError{}
+		responseErr.Status = 404
+		responseErr.Error = err
+	}
+	responseData.Status = 200
+	responseData.Data = output
+	c.JSON(200, responseData)
+}
+
 func CreateProduct(c *gin.Context) {
 	input := request.CreateProduct{}
 	responseData := response.ResponseData{}
@@ -31,5 +48,6 @@ func CreateProduct(c *gin.Context) {
 }
 
 func init() {
+	methodRoutes[ROUTE_GET]["/product"] = GetAllProduct
 	methodRoutes[ROUTE_POST]["/product"] = CreateProduct
 }

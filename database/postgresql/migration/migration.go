@@ -1,68 +1,71 @@
+// migration.go
 package migration
 
 import (
-	"context"
 	"fmt"
 	"sort"
 
 	"github.com/VanillaSkys/golang/database/postgresql"
+	"gorm.io/gorm"
 )
 
 type Migration struct {
 	Number   uint
 	Name     string
-	Function func(code string) error
+	Function func(db *gorm.DB) error
 }
 
 var Migrations []*Migration
 
-func Migrate(code string) {
-	// Sort migrations by number
-	sort.Slice(Migrations, func(i, j int) bool {
-		return Migrations[i].Number < Migrations[j].Number
-	})
+// Migrate performs database migrations.
+func Migrate(db *gorm.DB, action string) error {
+	sortMigrations()
 
-	// Execute migrations
 	for _, m := range Migrations {
-		m.Function(code)
-		// if err := m.Function(code); err != nil {
-		// 	fmt.Printf("Error running migration '%s': %s\n", m.Name, err)
-		// 	return
-		// }
-		// fmt.Printf("Migration '%s' executed successfully\n", m.Name)
+		if action == "update" && m.Function != nil {
+			if err := m.Function(db); err != nil {
+				return fmt.Errorf("error running migration '%s': %w", m.Name, err)
+			}
+			fmt.Printf("Migration '%s' executed successfully\n", m.Name)
+		} else if action == "create" && m.Function != nil {
+			if err := m.Function(db); err != nil {
+				return fmt.Errorf("error running migration '%s': %w", m.Name, err)
+			}
+			fmt.Printf("Migration '%s' executed successfully\n", m.Name)
+		} else {
+			return fmt.Errorf("invalid action '%s': must be 'update' or 'create'", action)
+		}
 	}
+
+	return nil
 }
 
 func Create(name string, column string) error {
+	type Model struct {
+		gorm.Model
+	}
 
-	// Drop table
-	dropSql := fmt.Sprintf("DROP TABLE IF EXISTS %s CASCADE", name)
-	_, err := postgresql.DB.Query(context.Background(), dropSql)
-	if err != nil {
-		fmt.Println("Error dropping table:", err)
-		return err
+	if err := postgresql.DB.AutoMigrate(&Model{}); err != nil {
+		return fmt.Errorf("error creating table '%s': %w", name, err)
 	}
-	fmt.Printf("Table '%s' dropped successfully!", name)
-	// Create table
-	create := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (%s)", name, column)
-	_, err = postgresql.DB.Query(context.Background(), create)
-	if err != nil {
-		fmt.Println("Error creating table:", err)
-		return err
-	}
-	fmt.Printf("Table '%s' created successfully!", name)
+	fmt.Printf("Table '%s' created successfully\n", name)
 	return nil
 }
 
 func Update(name string, column string) error {
-	// Create table
-	create := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (%s)", name, column)
-	_, err := postgresql.DB.Query(context.Background(), create)
-	fmt.Println("YES")
-	if err != nil {
-		fmt.Println("Error creating table:", err)
-		return err
+	type Model struct {
+		gorm.Model
 	}
-	fmt.Printf("Table '%s' created successfully!", name)
+
+	if err := postgresql.DB.AutoMigrate(&Model{}); err != nil {
+		return fmt.Errorf("error updating table '%s': %w", name, err)
+	}
+	fmt.Printf("Table '%s' updated successfully\n", name)
 	return nil
+}
+
+func sortMigrations() {
+	sort.Slice(Migrations, func(i, j int) bool {
+		return Migrations[i].Number < Migrations[j].Number
+	})
 }

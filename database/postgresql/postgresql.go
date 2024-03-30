@@ -1,10 +1,10 @@
 package postgresql
 
 import (
-	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v4/pgxpool"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 const (
@@ -15,28 +15,18 @@ const (
 	dbname   = "go_test"
 )
 
-var DB *pgxpool.Pool
+var DB *gorm.DB
 
-func ConnectDB() (*pgxpool.Pool, error) {
-	connString := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
+func ConnectDB() (*gorm.DB, error) {
+	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable TimeZone=Asia/Bangkok",
 		host, port, user, password, dbname)
-
-	config, err := pgxpool.ParseConfig(connString)
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN: dsn,
+	}), &gorm.Config{})
 	if err != nil {
-		return nil, err
-	}
-
-	db, err := pgxpool.ConnectConfig(context.Background(), config)
-	if err != nil {
-		return nil, err
-	}
-
-	// Check the connection
-	if err := db.Ping(context.Background()); err != nil {
-		db.Close()
 		return nil, err
 	}
 	DB = db
-	return DB, nil
+	return db, nil
 }

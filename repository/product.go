@@ -1,38 +1,48 @@
 package repository
 
 import (
-	"context"
+	"errors"
+
+	"github.com/VanillaSkys/golang/model"
 )
 
-const PRODUCT_TABLE_NAME = "products"
-
 type ProductRepository interface {
-	Save(name string) error
+	FindAll() ([]model.Product, error)
+	FindByName(name string) (model.Product, error)
+	Save(product model.Product) error
+	Update(id string, name string) error
 }
 
-func (repository Repository) Save(id string, name string) error {
-	_, err := repository.DB.Query(context.Background(), "INSERT INTO "+PRODUCT_TABLE_NAME+" (id, name) VALUES ($1, $2)", id, name)
-	if err != nil {
-		return err
+func (repository Repository) FindAll() ([]model.Product, error) {
+	var product []model.Product
+	result := repository.DB.Find(&product)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return product, nil
+}
+
+func (repository Repository) FindByName(name string) (model.Product, error) {
+	var product model.Product
+	result := repository.DB.Find(&product, name)
+	if result != nil {
+		return product, nil
+	}
+	return product, errors.New("product is not found")
+}
+
+func (repository Repository) Save(product model.Product) error {
+	result := repository.DB.Save(&product)
+	if result.Error != nil {
+		return result.Error
 	}
 	return nil
 }
 
-// func FindByID(ctx context.Context, id int) (*model.User, error) {
-// 	var user model.User
-// 	err := r.db.QueryRow(ctx, "SELECT id, username, email FROM users WHERE id = $1", id).Scan(&user.ID, &user.Username, &user.Email)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &user, nil
-// }
-
-// func Update(ctx context.Context, user *model.User) error {
-// 	_, err := r.db.Exec(ctx, "UPDATE users SET username = $1, email = $2 WHERE id = $3", user.Username, user.Email, user.ID)
-// 	return err
-// }
-
-// func Delete(ctx context.Context, id int) error {
-// 	_, err := r.db.Exec(ctx, "DELETE FROM users WHERE id = $1", id)
-// 	return err
-// }
+func (repository Repository) Update(id string, name string) error {
+	result := repository.DB.Model(&model.Product{}).Where("id = ?", id).Update("name", name)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

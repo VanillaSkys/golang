@@ -1,14 +1,14 @@
 package repository
 
 import (
-	"github.com/jackc/pgx/v4/pgxpool"
+	"gorm.io/gorm"
 )
 
 type Repository struct {
 	RequestId string
-	DB        *pgxpool.Pool
+	DB        *gorm.DB
 }
 
-func New(requestId string, db *pgxpool.Pool) Repository {
+func New(requestId string, db *gorm.DB) Repository {
 	return Repository{RequestId: requestId, DB: db}
 }
