@@ -9,8 +9,6 @@ import (
 )
 
 const (
-	ROUTE_GET     = "GET"
-	ROUTE_POST    = "POST"
 	serverAddress = "localhost:8080"
 )
 
